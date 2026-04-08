@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIVIT S.p.A SB - Caricamento Documento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RIVIT S.p.A SB - Loading...</title>
     <style>
-        /* Rimuove margini e scrollbar */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             overflow: hidden;
-            background-color: #ffffff;
+            background-color: #000; /* Sfondo nero durante il caricamento */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Schermata iniziale con intro.jpg */
-        #splash-screen {
+        /* Schermata Intro */
+        #splash {
             position: fixed;
             top: 0;
             left: 0;
@@ -25,72 +25,94 @@
             background-image: url('intro.jpg');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            z-index: 9999;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s ease;
+            z-index: 9999;
         }
 
-        /* Spinner opzionale per far capire che sta caricando */
+        /* Overlay scuro per leggere meglio il testo */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        /* Spinner */
         .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #e11d48; /* Colore rosso Rivit */
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #e11d48; /* Rosso Rivit */
             border-radius: 50%;
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
-            position: absolute;
-            bottom: 10%;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .loading-text {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* Il contenitore del PDF */
-        #pdf-container {
-            width: 100%;
-            height: 100vh;
-            border: none;
-        }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="loader"></div>
+    <div id="splash">
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="loader"></div>
+            <div class="loading-text">Loading Document...</div>
+        </div>
     </div>
 
-    <iframe 
-        id="pdf-container" 
-        src="RIVIT_Company Profile.pdf" 
-        onload="hideSplash()">
-    </iframe>
-
     <script>
-        function hideSplash() {
-            const splash = document.getElementById('splash-screen');
-            // Aggiungiamo un piccolo ritardo extra (500ms) per sicurezza 
-            // e poi sfumiamo l'immagine intro.jpg
-            setTimeout(() => {
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 500);
-            }, 800); // Leggermente aumentato per garantire che il PDF sia renderizzato
-        }
+        // Nome del file PDF
+        const pdfUrl = "RIVIT_Company Profile.pdf";
 
-        // Fallback: se il PDF ci mette troppo o l'evento onload non scatta correttamente,
-        // rimuoviamo comunque lo splash dopo 12 secondi per permettere la visione.
-        setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            if(splash && splash.style.display !== 'none') {
-                hideSplash();
-            }
-        }, 12000);
+        // Funzione di caricamento
+        window.onload = function() {
+            // Pre-carichiamo il file in background
+            const req = new XMLHttpRequest();
+            req.open('GET', pdfUrl, true);
+            req.responseType = 'blob';
+
+            req.onload = function() {
+                if (this.status === 200) {
+                    // Se il file è stato scaricato con successo, vai al PDF
+                    // Usiamo un piccolo ritardo per assicurarci che l'utente veda l'intro
+                    setTimeout(() => {
+                        window.location.href = pdfUrl;
+                    }, 2000); 
+                }
+            };
+
+            req.onerror = function() {
+                // In caso di errore (es. offline), prova comunque ad aprire il file dopo 3 secondi
+                setTimeout(() => {
+                    window.location.href = pdfUrl;
+                }, 3000);
+            };
+
+            req.send();
+        };
     </script>
 
 </body>
