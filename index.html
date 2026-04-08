@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIVIT S.p.A SB - Caricamento Documento</title>
+    <style>
+        /* Rimuove margini e scrollbar */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Schermata iniziale con intro.jpg */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('intro.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Spinner opzionale per far capire che sta caricando */
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #e11d48; /* Colore rosso Rivit */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            bottom: 10%;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Il contenitore del PDF */
+        #pdf-container {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="loader"></div>
+    </div>
+
+    <iframe 
+        id="pdf-container" 
+        src="TUO_LINK_DIRETTO_AL_PDF" 
+        onload="hideSplash()">
+    </iframe>
+
+    <script>
+        function hideSplash() {
+            const splash = document.getElementById('splash-screen');
+            // Aggiungiamo un piccolo ritardo extra (es. 500ms) per sicurezza 
+            // e poi sfumiamo l'immagine intro.jpg
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 500);
+            }, 500);
+        }
+
+        // Fallback: se il PDF ci mette troppo o l'evento onload non scatta correttamente,
+        // rimuoviamo comunque lo splash dopo 10 secondi per permettere la visione.
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if(splash.style.display !== 'none') {
+                hideSplash();
+            }
+        }, 10000);
+    </script>
+
+</body>
+</html>
