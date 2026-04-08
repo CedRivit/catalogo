@@ -66,31 +66,31 @@
 
     <iframe 
         id="pdf-container" 
-        src="TUO_LINK_DIRETTO_AL_PDF" 
+        src="RIVIT_Company Profile.pdf" 
         onload="hideSplash()">
     </iframe>
 
     <script>
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            // Aggiungiamo un piccolo ritardo extra (es. 500ms) per sicurezza 
+            // Aggiungiamo un piccolo ritardo extra (500ms) per sicurezza 
             // e poi sfumiamo l'immagine intro.jpg
             setTimeout(() => {
                 splash.style.opacity = '0';
                 setTimeout(() => {
                     splash.style.display = 'none';
                 }, 500);
-            }, 500);
+            }, 800); // Leggermente aumentato per garantire che il PDF sia renderizzato
         }
 
         // Fallback: se il PDF ci mette troppo o l'evento onload non scatta correttamente,
-        // rimuoviamo comunque lo splash dopo 10 secondi per permettere la visione.
+        // rimuoviamo comunque lo splash dopo 12 secondi per permettere la visione.
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
-            if(splash.style.display !== 'none') {
+            if(splash && splash.style.display !== 'none') {
                 hideSplash();
             }
-        }, 10000);
+        }, 12000);
     </script>
 
 </body>
